@@ -5,6 +5,53 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Red -->
+    <color name="red_10">#1AFF0000</color>
+    <color name="red_20">#33FF0000</color>
+    <color name="red_30">#4DFF0000</color>
+    <color name="red_40">#66FF0000</color>
+    <color name="red_50">#80FF0000</color>
+    <color name="red_60">#99FF0000</color>
+    <color name="red_70">#B3FF0000</color>
+    <color name="red_80">#CCFF0000</color>
+    <color name="red_90">#E6FF0000</color>
+    <color name="red_100">#FFFF0000</color>
+
+    <!-- Blue -->
+    <color name="blue_10">#1A0000FF</color>
+    <color name="blue_20">#330000FF</color>
+    <color name="blue_30">#4D0000FF</color>
+    <color name="blue_40">#660000FF</color>
+    <color name="blue_50">#800000FF</color>
+    <color name="blue_60">#990000FF</color>
+    <color name="blue_70">#B30000FF</color>
+    <color name="blue_80">#CC0000FF</color>
+    <color name="blue_90">#E60000FF</color>
+    <color name="blue_100">#FF0000FF</color>
+
+    <!-- Black -->
+    <color name="black_10">#1A000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="black_30">#4D000000</color>
+    <color name="black_40">#66000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_70">#B3000000</color>
+    <color name="black_80">#CC000000</color>
+    <color name="black_90">#E6000000</color>
+    <color name="black_100">#FF000000</color>
+
+    <!-- White -->
+    <color name="white_10">#1AFFFFFF</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="white_30">#4DFFFFFF</color>
+    <color name="white_40">#66FFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
+    <color name="white_60">#99FFFFFF</color>
+    <color name="white_70">#B3FFFFFF</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="white_90">#E6FFFFFF</color>
+    <color name="white_100">#FFFFFFFF</color>
 </resources>
