@@ -3,4 +3,5 @@
     <string name="app_title">Deezer Music (Demo)</string>
     <string name="artist_list_title">Best of artists</string>
     <string name="music_list_title">Recommended for today</string>
+    <string name="artist_top_tracks_title">Top tracks</string>
 </resources>

@@ -11,10 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.deezermusicdemo.ui.navigation.Screen
+import com.example.deezermusicdemo.ui.screen.ArtistScreen
 import com.example.deezermusicdemo.ui.screen.HomeScreen
 import com.example.deezermusicdemo.ui.theme.DeezerMusicDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,22 +28,43 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-
             DeezerMusicDemoTheme {
-                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = Screen.Home.route,
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        composable(Screen.Home.route) {
-                            HomeScreen(
-                                modifier = Modifier.padding(innerPadding)
-                            )
-                        }
+                MainScreen()
+            }
+        }
+    }
+}
+
+@Composable
+private fun MainScreen() {
+    val navController = rememberNavController()
+
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Home.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(
+                route = Screen.Home.route
+            ) {
+                HomeScreen(
+                    onNavToArtist = { artistId ->
+                        navController.navigate(Screen.Artist.createRoute(artistId))
                     }
-                }
+                )
+            }
+            composable(
+                route = Screen.Artist.route,
+                arguments = listOf(
+                    navArgument("artistId") {
+                        type = NavType.LongType
+                    }
+                )
+            ) { backStackEntry ->
+                ArtistScreen(
+                    onBackBtnClicked = { navController.popBackStack() }
+                )
             }
         }
     }

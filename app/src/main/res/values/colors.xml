@@ -19,6 +19,18 @@
     <color name="red_90">#E6FF0000</color>
     <color name="red_100">#FFFF0000</color>
 
+    <!-- Green -->
+    <color name="green_10">#1A00FF00</color>
+    <color name="green_20">#3300FF00</color>
+    <color name="green_30">#4D00FF00</color>
+    <color name="green_40">#6600FF00</color>
+    <color name="green_50">#8000FF00</color>
+    <color name="green_60">#9900FF00</color>
+    <color name="green_70">#B300FF00</color>
+    <color name="green_80">#CC00FF00</color>
+    <color name="green_90">#E600FF00</color>
+    <color name="green_100">#FF00FF00</color>
+
     <!-- Blue -->
     <color name="blue_10">#1A0000FF</color>
     <color name="blue_20">#330000FF</color>

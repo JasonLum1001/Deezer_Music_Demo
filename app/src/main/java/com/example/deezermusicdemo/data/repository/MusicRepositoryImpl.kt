@@ -1,5 +1,6 @@
 package com.example.deezermusicdemo.data.repository
 
+import android.util.Log
 import com.example.deezermusicdemo.data.mapper.toArtistItem
 import com.example.deezermusicdemo.data.remote.DeezerApiService
 import com.example.deezermusicdemo.domain.model.MusicItem
@@ -12,14 +13,32 @@ class MusicRepositoryImpl @Inject constructor(
     private val apiService: DeezerApiService
 ) : MusicRepository {
     override suspend fun searchTracks(query: String): List<MusicItem> {
-        return apiService.searchTracks(query).data.map { it.toMusicItem() }
+        val result = apiService.searchTracks(query).data.map { it.toMusicItem() }
+        Log.d("MusicRepository", "searchTracks: $query -> ${result.count()}")
+        return result
     }
 
     override suspend fun getRecommendedTracks(): List<MusicItem> {
-        return apiService.getRecommendedTracks().data.map { it.toMusicItem() }
+        val result = apiService.getRecommendedTracks().data.map { it.toMusicItem() }
+        Log.d("MusicRepository", "getRecommendedTracks -> ${result.count()}")
+        return result
     }
 
     override suspend fun getRecommendedArtists(): List<ArtistItem> {
-        return apiService.getRecommendedArtists().data.map { it.toArtistItem() }
+        val result = apiService.getRecommendedArtists().data.map { it.toArtistItem() }
+        Log.d("MusicRepository", "getRecommendedArtists -> ${result.count()}")
+        return result
+    }
+
+    override suspend fun getArtistFromId(artistId: Long): ArtistItem {
+        val result = apiService.getArtistFromId(artistId).toArtistItem()
+        Log.d("MusicRepository", "getArtistFromId: $artistId -> $result")
+        return result
+    }
+
+    override suspend fun getTracksFromArtistId(artistId: Long): List<MusicItem> {
+        val result = apiService.getTracksFromArtistId(artistId).data.map { it.toMusicItem() }
+        Log.d("MusicRepository", "getTracksFromArtistId: $artistId -> ${result.count()}")
+        return result
     }
 }

@@ -1,6 +1,7 @@
 package com.example.deezermusicdemo.ui.screen
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,13 +36,23 @@ import com.example.deezermusicdemo.ui.viewmodel.MusicViewModel
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: MusicViewModel = hiltViewModel()
+    viewModel: MusicViewModel = hiltViewModel(),
+    onNavToArtist: (Long) -> Unit
 ) {
     val recommendedMusic by viewModel.recommendedMusic.collectAsState()
     val recommendedArtist by viewModel.recommendedArtist.collectAsState()
 
     LazyColumn(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        colorResource(R.color.transparent),
+                        colorResource(R.color.green_20)
+                    )
+                )
+            )
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
@@ -60,6 +72,7 @@ fun HomeScreen(
                 artistList = recommendedArtist,
                 onItemClick = { item ->
                     Log.d("HomeScreen", "Artist: ${item.name} clicked")
+                    onNavToArtist.invoke(item.id)
                 }
             )
         }
