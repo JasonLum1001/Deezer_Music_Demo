@@ -12,25 +12,32 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MusicViewModel @Inject constructor(
+class SearchViewModel @Inject constructor(
     private val repository: MusicRepository,
     private val networkMonitor: NetworkMonitor
 ) : ViewModel() {
 
-    private val _recommendedMusic = MutableStateFlow<List<MusicItem>>(emptyList())
-    val recommendedMusic = _recommendedMusic.asStateFlow()
-
-    private val _recommendedArtistItem = MutableStateFlow<List<ArtistItem>>(emptyList())
-    val recommendedArtist = _recommendedArtistItem.asStateFlow()
+    private val _searchResults = MutableStateFlow<List<MusicItem>>(emptyList())
+    val searchResults = _searchResults.asStateFlow()
 
     init {
         loadRecommendations()
     }
+
+    fun searchTracks(query: String) {
+        viewModelScope.launch {
+            try {
+                _searchResults.value = repository.searchTracks(query)
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
+    }
+
     private fun loadRecommendations() {
         viewModelScope.launch {
             try {
-                _recommendedMusic.value = repository.getRecommendedTracks()
-                _recommendedArtistItem.value = repository.getRecommendedArtists()
+                _searchResults.value = repository.getRecommendedTracks()
             } catch (e: Exception) {
                 // Handle error
             }

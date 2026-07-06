@@ -2,7 +2,6 @@ package com.example.deezermusicdemo.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,15 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,8 +33,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.deezermusicdemo.R
 import com.example.deezermusicdemo.common.component.Heading
+import com.example.deezermusicdemo.common.component.IconButton
 import com.example.deezermusicdemo.domain.model.ArtistItem
-import com.example.deezermusicdemo.domain.model.MusicItem
 import com.example.deezermusicdemo.ui.component.MusicItemView
 import com.example.deezermusicdemo.ui.viewmodel.ArtistViewModel
 
@@ -52,15 +48,14 @@ fun ArtistScreen(
     val artistTracks by viewModel.artistTracks.collectAsState()
 
     LazyColumn(
-        modifier = modifier
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        colorResource(R.color.transparent),
-                        colorResource(R.color.green_20)
-                    )
+        modifier = modifier.background(
+            Brush.verticalGradient(
+                listOf(
+                    colorResource(R.color.transparent),
+                    colorResource(R.color.green_20)
                 )
-            ),
+            )
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
@@ -98,6 +93,7 @@ fun ArtistHeader(
             .height(360.dp)
     ) {
 
+        // Artist Profile Image
         if (artistInfo != null) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
@@ -107,6 +103,7 @@ fun ArtistHeader(
             )
         }
 
+        // Mask
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -121,20 +118,18 @@ fun ArtistHeader(
                 )
         )
 
+        // Back Button
         IconButton(
-            onClick = onBackBtnClicked,
             modifier = Modifier
-                .padding(8.dp)
                 .align(Alignment.TopStart)
-        ) {
-            Icon(
-                modifier = Modifier.size(32.dp),
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                contentDescription = null
-            )
-        }
+                .padding(8.dp),
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+            iconSize = 60.dp,
+            onClick = onBackBtnClicked
+        )
 
         if (artistInfo != null) {
+            // Artist Name
             Text(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -145,6 +140,7 @@ fun ArtistHeader(
                 color = colorResource(R.color.white_100)
             )
 
+            // Play Button
             FloatingActionButton(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)

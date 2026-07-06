@@ -23,7 +23,7 @@ fun TitleBar(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 24.dp),
+            .padding(top = 24.dp, bottom = 8.dp),
         text = text,
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
