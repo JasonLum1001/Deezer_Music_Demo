@@ -2,10 +2,12 @@ package com.example.deezermusicdemo.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,13 +33,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.deezermusicdemo.R
 import com.example.deezermusicdemo.common.component.IconButton
-import com.example.deezermusicdemo.ui.component.MusicItemView
-import com.example.deezermusicdemo.ui.component.MusicSearchBar
+import com.example.deezermusicdemo.ui.component.ItemView.MusicItemView
+import com.example.deezermusicdemo.ui.component.StateView.ErrorStateView
+import com.example.deezermusicdemo.ui.component.StateView.LoadingStateView
+import com.example.deezermusicdemo.ui.component.StateView.NoNetworkStateView
+import com.example.deezermusicdemo.ui.component.widget.MusicSearchBar
+import com.example.deezermusicdemo.ui.state.SearchListState
 import com.example.deezermusicdemo.ui.viewmodel.SearchViewModel
 
 @Composable
@@ -46,34 +53,63 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
     onBackBtnClicked: () -> Unit
 ) {
-    val searchResults by viewModel.searchResults.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    LazyColumn(
-        modifier = modifier.background(
-            Brush.verticalGradient(
-                listOf(
-                    colorResource(R.color.transparent),
-                    colorResource(R.color.green_20)
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        colorResource(R.color.transparent),
+                        colorResource(R.color.green_20)
+                    )
                 )
             )
-        ),
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        item {
-            SearchHeader(
-                onBackBtnClicked = onBackBtnClicked,
-                onSearch = { query -> viewModel.searchTracks(query) }
-            )
+        SearchHeader(
+            onBackBtnClicked = onBackBtnClicked,
+            onSearch = { query ->
+                viewModel.searchTracks(query)
+            }
+        )
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            when (val state = uiState) {
+                is SearchListState.Loading -> {
+                    LoadingStateView(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                is SearchListState.NetworkError -> {
+                    NoNetworkStateView(
+                        modifier = Modifier.align(Alignment.Center),
+                        onRetry = { viewModel.retry() }
+                    )
+                }
+
+                is SearchListState.Error -> {
+                    ErrorStateView(
+                        modifier = Modifier.align(Alignment.Center),
+                        message = state.message,
+                        onRetry = { viewModel.retry() }
+                    )
+                }
+
+                is SearchListState.Success -> {
+                    SuccessSearchScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        uiState = state
+                    )
+                }
+            }
         }
 
-        items(
-            items = searchResults
-        ) { item ->
-            MusicItemView(
-                item = item,
-                onClick = {}
-            )
-        }
     }
 }
 
@@ -110,7 +146,7 @@ fun SearchHeader(
             onValueChange = { query ->
                 searchQuery = query
             },
-            placeholderText = "Search songs, artists, podcast",
+            placeholderText = stringResource(R.string.search_bar_hint),
             fontSize = 16.sp,
             leadingIcon = {
                 Icon(
@@ -120,7 +156,6 @@ fun SearchHeader(
             },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
-                    Spacer(modifier = Modifier.width(4.dp))
                     IconButton(
                         modifier = Modifier
                             .background(
@@ -142,4 +177,25 @@ fun SearchHeader(
         )
     }
 
+}
+
+@Composable
+fun SuccessSearchScreen(
+    modifier: Modifier = Modifier,
+    uiState: SearchListState.Success
+) {
+    LazyColumn(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+
+        items(
+            items = uiState.searchResult
+        ) { item ->
+            MusicItemView(
+                item = item,
+                onClick = {}
+            )
+        }
+    }
 }

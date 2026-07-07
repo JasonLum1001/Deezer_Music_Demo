@@ -7,27 +7,45 @@ import com.example.deezermusicdemo.domain.model.MusicItem
 import com.example.deezermusicdemo.domain.repository.MusicRepository
 import com.example.deezermusicdemo.data.mapper.toMusicItem
 import com.example.deezermusicdemo.domain.model.ArtistItem
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class MusicRepositoryImpl @Inject constructor(
     private val apiService: DeezerApiService
 ) : MusicRepository {
+
+    private val _recommendedMusic = MutableStateFlow<List<MusicItem>>(emptyList())
+    override val recommendedMusic = _recommendedMusic.asStateFlow()
+
+    private val _recommendedArtist = MutableStateFlow<List<ArtistItem>>(emptyList())
+    override val recommendedArtist = _recommendedArtist.asStateFlow()
+
     override suspend fun searchTracks(query: String): List<MusicItem> {
         val result = apiService.searchTracks(query).data.map { it.toMusicItem() }
         Log.d("MusicRepository", "searchTracks: $query -> ${result.count()}")
         return result
     }
 
-    override suspend fun getRecommendedTracks(): List<MusicItem> {
-        val result = apiService.getRecommendedTracks().data.map { it.toMusicItem() }
-        Log.d("MusicRepository", "getRecommendedTracks -> ${result.count()}")
-        return result
-    }
+    override suspend fun refreshRecommendations() {
+        coroutineScope {
+            val music = async {
+                apiService.getRecommendedTracks()
+                    .data
+                    .map { it.toMusicItem() }
+            }
 
-    override suspend fun getRecommendedArtists(): List<ArtistItem> {
-        val result = apiService.getRecommendedArtists().data.map { it.toArtistItem() }
-        Log.d("MusicRepository", "getRecommendedArtists -> ${result.count()}")
-        return result
+            val artists = async {
+                apiService.getRecommendedArtists()
+                    .data
+                    .map { it.toArtistItem() }
+            }
+
+            _recommendedMusic.value = music.await()
+            _recommendedArtist.value = artists.await()
+        }
     }
 
     override suspend fun getArtistFromId(artistId: Long): ArtistItem {
