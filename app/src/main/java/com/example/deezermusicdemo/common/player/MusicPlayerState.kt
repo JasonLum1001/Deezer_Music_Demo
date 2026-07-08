@@ -12,5 +12,6 @@ data class MusicPlayerState(
     val duration: Long = 0L,
     val repeatMode: Int = Player.REPEAT_MODE_OFF,
     val shuffleEnabled: Boolean = false,
+    val isPlayerVisible: Boolean = false,
     val error: String? = null
 )

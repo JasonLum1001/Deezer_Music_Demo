@@ -48,9 +48,7 @@ class MusicViewModel @Inject constructor(
     )
 
     init {
-        if (repository.recommendedMusic.value.isEmpty()) {
-            loadRecommendations()
-        }
+        loadRecommendations()
     }
 
     fun retry() {
