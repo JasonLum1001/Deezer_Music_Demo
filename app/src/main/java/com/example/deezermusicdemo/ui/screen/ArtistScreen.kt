@@ -2,7 +2,6 @@ package com.example.deezermusicdemo.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,7 +9,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -37,19 +36,20 @@ import com.example.deezermusicdemo.R
 import com.example.deezermusicdemo.common.component.Heading
 import com.example.deezermusicdemo.common.component.IconButton
 import com.example.deezermusicdemo.domain.model.ArtistItem
+import com.example.deezermusicdemo.domain.model.MusicItem
 import com.example.deezermusicdemo.ui.component.ItemView.MusicItemView
 import com.example.deezermusicdemo.ui.component.StateView.ErrorStateView
 import com.example.deezermusicdemo.ui.component.StateView.LoadingStateView
 import com.example.deezermusicdemo.ui.component.StateView.NoNetworkStateView
 import com.example.deezermusicdemo.ui.state.ArtistListState
-import com.example.deezermusicdemo.ui.state.HomeListState
 import com.example.deezermusicdemo.ui.viewmodel.ArtistViewModel
 
 @Composable
 fun ArtistScreen(
     modifier: Modifier = Modifier,
     viewModel: ArtistViewModel = hiltViewModel(),
-    onBackBtnClicked: () -> Unit
+    onBackBtnClicked: () -> Unit,
+    onNavToMusic: (List<MusicItem>, Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -67,7 +67,8 @@ fun ArtistScreen(
     ) {
         ArtistHeader(
             modifier = Modifier.zIndex(1f),
-            onBackBtnClicked = onBackBtnClicked
+            onBackBtnClicked = onBackBtnClicked,
+
         )
 
         when (val state = uiState) {
@@ -96,6 +97,7 @@ fun ArtistScreen(
                 SuccessArtistScreen(
                     modifier = Modifier.fillMaxSize(),
                     uiState = state,
+                    onNavToMusic = onNavToMusic
                 )
             }
         }
@@ -105,7 +107,8 @@ fun ArtistScreen(
 @Composable
 private fun SuccessArtistScreen(
     modifier: Modifier,
-    uiState: ArtistListState.Success
+    uiState: ArtistListState.Success,
+    onNavToMusic: (List<MusicItem>, Int) -> Unit
 ) {
     LazyColumn(
         modifier = modifier.background(
@@ -120,7 +123,10 @@ private fun SuccessArtistScreen(
     ) {
         item {
             ArtistInfoBox(
-                artistInfo = uiState.artistInfo
+                artistInfo = uiState.artistInfo,
+                onPlayClicked = {
+                    onNavToMusic.invoke(uiState.artistTracks, 0)
+                }
             )
         }
 
@@ -131,13 +137,15 @@ private fun SuccessArtistScreen(
             )
         }
 
-        items(
+        itemsIndexed(
             uiState.artistTracks
-        ) { item ->
+        ) { index, item ->
             MusicItemView(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 item = item,
-                onClick = {}
+                onClick = {
+                    onNavToMusic.invoke(uiState.artistTracks, index)
+                }
             )
         }
     }
@@ -176,7 +184,8 @@ private fun ArtistHeader(
 
 @Composable
 fun ArtistInfoBox(
-    artistInfo: ArtistItem
+    artistInfo: ArtistItem,
+    onPlayClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -223,7 +232,7 @@ fun ArtistInfoBox(
                 .align(Alignment.BottomEnd)
                 .offset(y = 24.dp)
                 .padding(end = 16.dp),
-            onClick = {},
+            onClick = onPlayClicked,
             shape = CircleShape,
             containerColor = colorResource(R.color.green_100)
         ) {

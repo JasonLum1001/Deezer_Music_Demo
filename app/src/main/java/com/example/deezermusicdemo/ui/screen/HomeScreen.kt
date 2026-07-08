@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import com.example.deezermusicdemo.common.component.Heading
 import com.example.deezermusicdemo.common.component.IconButton
 import com.example.deezermusicdemo.common.component.TitleBar
 import com.example.deezermusicdemo.domain.model.ArtistItem
+import com.example.deezermusicdemo.domain.model.MusicItem
 import com.example.deezermusicdemo.ui.component.ItemView.ArtistItemView
 import com.example.deezermusicdemo.ui.component.ItemView.MusicItemView
 import com.example.deezermusicdemo.ui.component.StateView.ErrorStateView
@@ -44,7 +46,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: MusicViewModel = hiltViewModel(),
     onNavToArtist: (Long) -> Unit,
-    onNavToSearch: () -> Unit
+    onNavToMusic: (List<MusicItem>, Int) -> Unit,
+    onNavToSearch: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -95,7 +98,8 @@ fun HomeScreen(
                     SuccessHomeScreen(
                         modifier = Modifier.fillMaxSize(),
                         uiState = state,
-                        onNavToArtist = onNavToArtist
+                        onNavToArtist = onNavToArtist,
+                        onNavToMusic = onNavToMusic
                     )
                 }
             }
@@ -127,7 +131,8 @@ private fun HomeHeader(onNavToSearch: () -> Unit) {
 private fun SuccessHomeScreen(
     modifier: Modifier = Modifier,
     uiState: HomeListState.Success,
-    onNavToArtist: (Long) -> Unit
+    onNavToArtist: (Long) -> Unit,
+    onNavToMusic: (List<MusicItem>, Int) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -155,13 +160,14 @@ private fun SuccessHomeScreen(
             )
         }
 
-        items(
+        itemsIndexed(
             items = uiState.recommendedMusic,
-            itemContent = { item ->
+            itemContent = { index, item ->
                 MusicItemView(
                     item = item,
                     onClick = {
                         Log.d("HomeScreen", "Music: ${item.title} clicked")
+                        onNavToMusic.invoke(uiState.recommendedMusic, index)
                     }
                 )
             }

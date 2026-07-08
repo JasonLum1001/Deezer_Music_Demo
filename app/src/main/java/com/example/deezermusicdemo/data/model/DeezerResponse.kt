@@ -14,7 +14,7 @@ data class DeezerTrack(
     @SerializedName("id") val id: Long,
     @SerializedName("title") val title: String,
     @SerializedName("preview") val preview: String,
-    @SerializedName("duration") val duration: Int,
+    @SerializedName("duration") val duration: Long,
     @SerializedName("artist") val artist: DeezerArtist,
     @SerializedName("album") val album: DeezerAlbum
 )

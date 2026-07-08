@@ -2,7 +2,7 @@ package com.example.deezermusicdemo.utils
 
 object TimeUtils {
     /**
-     * Convert seconds to a formatted time string.
+     * Converts seconds to a formatted duration string.
      *
      * Examples:
      * 0 -> "0:00"
@@ -13,26 +13,23 @@ object TimeUtils {
      * 3600 -> "1:00:00"
      * 3665 -> "1:01:05"
      */
-    fun secondToDuration(seconds: Int): String {
-        if (seconds <= 0) return "0:00"
+    fun secondToDuration(seconds: Long): String {
+        val totalSeconds = seconds.coerceAtLeast(0)
 
-        val hours = seconds / 3600
-        val minutes = (seconds % 3600) / 60
-        val remainingSeconds = seconds % 60
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val secs = totalSeconds % 60
 
         return if (hours > 0) {
-            String.format(
-                "%d:%02d:%02d",
-                hours,
-                minutes,
-                remainingSeconds
-            )
+            "%d:%02d:%02d".format(hours, minutes, secs)
         } else {
-            String.format(
-                "%d:%02d",
-                minutes,
-                remainingSeconds
-            )
+            "%d:%02d".format(minutes, secs)
         }
     }
+
+    /**
+     * Converts milliseconds to a formatted duration string.
+     */
+    fun millisecondToDuration(milliseconds: Long): String =
+        secondToDuration(milliseconds / 1000)
 }

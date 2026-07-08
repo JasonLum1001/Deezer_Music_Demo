@@ -1,6 +1,5 @@
 package com.example.deezermusicdemo.data.mapper
 
-import com.example.deezermusicdemo.data.model.DeezerAlbum
 import com.example.deezermusicdemo.data.model.DeezerArtist
 import com.example.deezermusicdemo.data.model.DeezerTrack
 import com.example.deezermusicdemo.domain.model.ArtistItem

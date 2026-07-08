@@ -17,25 +17,27 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow<String?>(null)
-    private val _searchResults = MutableStateFlow(repository.recommendedMusic.value)
 
     private val _loading = MutableStateFlow(false)
     private val _error = MutableStateFlow<String?>(null)
     private val networkConnected = networkMonitor.isConnected
+    private val recommendedMusic = repository.recommendedMusic
+    private val searchResults = repository.searchResult
 
     val uiState = combine(
         _loading,
         _error,
         networkConnected,
-        _searchResults,
-    ) { loading, error, connected, searchResult ->
+        recommendedMusic,
+        searchResults
+    ) { loading, error, connected, recommendedMusic, searchResult ->
 
         when {
-            (!connected && searchResult.isEmpty()) -> SearchListState.NetworkError
+            (!connected && searchResult.isEmpty() && recommendedMusic.isEmpty()) -> SearchListState.NetworkError
             loading -> SearchListState.Loading
-            searchResult.isEmpty() || error != null -> SearchListState.Error(error ?: "")
+            (searchResult.isEmpty() && recommendedMusic.isEmpty()) || error != null -> SearchListState.Error(error ?: "")
             else -> SearchListState.Success(
-                searchResult = searchResult,
+                searchResult = searchResult.takeIf { it.isNotEmpty() } ?: recommendedMusic,
             )
         }
     }.stateIn(
@@ -45,6 +47,7 @@ class SearchViewModel @Inject constructor(
     )
 
     init {
+        clearSearchResult()
         if (repository.recommendedMusic.value.isEmpty() && _searchQuery.value.isNullOrEmpty()) {
             loadRecommendations()
         }
@@ -56,6 +59,12 @@ class SearchViewModel @Inject constructor(
             searchTracks(query)
         } else {
             loadRecommendations()
+        }
+    }
+
+    private fun clearSearchResult() {
+        viewModelScope.launch {
+            repository.clearSearchResult()
         }
     }
 
@@ -81,7 +90,7 @@ class SearchViewModel @Inject constructor(
             _error.value = null
 
             runCatching {
-                _searchResults.value = repository.searchTracks(query)
+                repository.searchTracks(query)
             }.onFailure {
                 _error.value = it.message
             }

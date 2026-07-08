@@ -6,6 +6,7 @@ import com.example.deezermusicdemo.data.remote.DeezerApiService
 import com.example.deezermusicdemo.domain.model.MusicItem
 import com.example.deezermusicdemo.domain.repository.MusicRepository
 import com.example.deezermusicdemo.data.mapper.toMusicItem
+import com.example.deezermusicdemo.domain.model.ArtistInfo
 import com.example.deezermusicdemo.domain.model.ArtistItem
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -23,13 +24,14 @@ class MusicRepositoryImpl @Inject constructor(
     private val _recommendedArtist = MutableStateFlow<List<ArtistItem>>(emptyList())
     override val recommendedArtist = _recommendedArtist.asStateFlow()
 
-    override suspend fun searchTracks(query: String): List<MusicItem> {
-        val result = apiService.searchTracks(query).data.map { it.toMusicItem() }
-        Log.d("MusicRepository", "searchTracks: $query -> ${result.count()}")
-        return result
-    }
+    private val _searchResult = MutableStateFlow<List<MusicItem>>(emptyList())
+    override val searchResult = _searchResult.asStateFlow()
+
+    private val _artistInfo = MutableStateFlow<ArtistInfo?>(null)
+    override val artistInfo = _artistInfo.asStateFlow()
 
     override suspend fun refreshRecommendations() {
+        Log.d("MusicRepository", "refreshRecommendations")
         coroutineScope {
             val music = async {
                 apiService.getRecommendedTracks()
@@ -48,15 +50,42 @@ class MusicRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getArtistFromId(artistId: Long): ArtistItem {
-        val result = apiService.getArtistFromId(artistId).toArtistItem()
-        Log.d("MusicRepository", "getArtistFromId: $artistId -> $result")
-        return result
+    override suspend fun searchTracks(query: String) {
+        Log.d("MusicRepository", "searchTracks: $query")
+
+        val result = apiService.searchTracks(query).data.map { it.toMusicItem() }
+        _searchResult.value = result
     }
 
-    override suspend fun getTracksFromArtistId(artistId: Long): List<MusicItem> {
-        val result = apiService.getTracksFromArtistId(artistId).data.map { it.toMusicItem() }
-        Log.d("MusicRepository", "getTracksFromArtistId: $artistId -> ${result.count()}")
-        return result
+    override suspend fun clearSearchResult() {
+        Log.d("MusicRepository", "clearSearchResult")
+
+        _searchResult.value = emptyList()
+    }
+
+    override suspend fun getArtistInfoFromId(artistId: Long) {
+        Log.d("MusicRepository", "getTracksFromArtistId")
+
+        coroutineScope {
+            val info = async {
+                apiService.getArtistFromId(artistId).toArtistItem()
+            }
+
+            val tracks = async {
+                apiService.getTracksFromArtistId(artistId).data.map { it.toMusicItem() }
+            }
+
+            _artistInfo.value = ArtistInfo(
+                info = info.await(),
+                tracks = tracks.await()
+            )
+
+        }
+    }
+
+    override suspend fun clearArtistInfo() {
+        Log.d("MusicRepository", "clearArtistInfo")
+
+        _artistInfo.value = null
     }
 }

@@ -14,8 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Search
@@ -34,11 +37,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.deezermusicdemo.R
 import com.example.deezermusicdemo.common.component.IconButton
+import com.example.deezermusicdemo.domain.model.MusicItem
 import com.example.deezermusicdemo.ui.component.ItemView.MusicItemView
 import com.example.deezermusicdemo.ui.component.StateView.ErrorStateView
 import com.example.deezermusicdemo.ui.component.StateView.LoadingStateView
@@ -51,7 +56,8 @@ import com.example.deezermusicdemo.ui.viewmodel.SearchViewModel
 fun SearchScreen(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = hiltViewModel(),
-    onBackBtnClicked: () -> Unit
+    onBackBtnClicked: () -> Unit,
+    onNavToMusic: (List<MusicItem>, Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -104,7 +110,8 @@ fun SearchScreen(
                 is SearchListState.Success -> {
                     SuccessSearchScreen(
                         modifier = Modifier.fillMaxSize(),
-                        uiState = state
+                        uiState = state,
+                        onNavToMusic = onNavToMusic
                     )
                 }
             }
@@ -122,6 +129,13 @@ fun SearchHeader(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     var searchQuery by remember { mutableStateOf("") }
+
+    fun search() {
+        onSearch.invoke(searchQuery)
+        searchQuery = ""
+        keyboardController?.hide()
+        focusManager.clearFocus()
+    }
 
     Row(
         modifier = Modifier.padding(8.dp),
@@ -148,6 +162,12 @@ fun SearchHeader(
             },
             placeholderText = stringResource(R.string.search_bar_hint),
             fontSize = 16.sp,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = { search() }
+            ),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -165,12 +185,7 @@ fun SearchHeader(
                             .size(32.dp)
                             .padding(4.dp),
                         imageVector = Icons.Default.Search,
-                        onClick = {
-                            onSearch.invoke(searchQuery)
-                            searchQuery = ""
-                            keyboardController?.hide()
-                            focusManager.clearFocus()
-                        }
+                        onClick = { search() }
                     )
                 }
             }
@@ -182,19 +197,22 @@ fun SearchHeader(
 @Composable
 fun SuccessSearchScreen(
     modifier: Modifier = Modifier,
-    uiState: SearchListState.Success
+    uiState: SearchListState.Success,
+    onNavToMusic: (List<MusicItem>, Int) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        items(
+        itemsIndexed(
             items = uiState.searchResult
-        ) { item ->
+        ) { index, item ->
             MusicItemView(
                 item = item,
-                onClick = {}
+                onClick = {
+                    onNavToMusic.invoke(listOf(item), index)
+                }
             )
         }
     }
