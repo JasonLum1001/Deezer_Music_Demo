@@ -63,7 +63,7 @@ fun PlayerBottomSheet(
     )
 
     ModalBottomSheet(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         onDismissRequest = onDismiss,
         sheetState = sheetState
     ) {
