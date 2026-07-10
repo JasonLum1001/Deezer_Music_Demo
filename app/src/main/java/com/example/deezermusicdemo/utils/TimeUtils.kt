@@ -30,6 +30,14 @@ object TimeUtils {
     /**
      * Converts milliseconds to a formatted duration string.
      */
-    fun millisecondToDuration(milliseconds: Long): String =
-        secondToDuration(milliseconds / 1000)
+    fun millisecondToDuration(milliseconds: Long): String {
+        return secondToDuration(milliseconds / 1000)
+    }
+
+    /**
+     * Converts milliseconds to seconds.
+     */
+    fun millisecondToSecond(milliseconds: Long): Long {
+        return milliseconds / 1000
+    }
 }

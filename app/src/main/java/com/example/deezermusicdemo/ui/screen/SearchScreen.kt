@@ -111,7 +111,10 @@ fun SearchScreen(
                     SuccessSearchScreen(
                         modifier = Modifier.fillMaxSize(),
                         uiState = state,
-                        onNavToMusic = onNavToMusic
+                        onNavToMusic = onNavToMusic,
+                        onBookmarkClick = { item ->
+                            viewModel.toggleBookmark(item)
+                        }
                     )
                 }
             }
@@ -138,7 +141,9 @@ fun SearchHeader(
     }
 
     Row(
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier
+            .height(60.dp)
+            .padding(top = 24.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -199,6 +204,7 @@ fun SuccessSearchScreen(
     modifier: Modifier = Modifier,
     uiState: SearchListState.Success,
     onNavToMusic: (List<MusicItem>, Int) -> Unit,
+    onBookmarkClick: (MusicItem) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -212,6 +218,9 @@ fun SuccessSearchScreen(
                 item = item,
                 onClick = {
                     onNavToMusic.invoke(listOf(item), index)
+                },
+                onBookmarkClick = {
+                    onBookmarkClick.invoke(item)
                 }
             )
         }

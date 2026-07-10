@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -47,6 +48,7 @@ fun HomeScreen(
     viewModel: MusicViewModel = hiltViewModel(),
     onNavToArtist: (Long) -> Unit,
     onNavToMusic: (List<MusicItem>, Int) -> Unit,
+    onNavToBookmark: () -> Unit,
     onNavToSearch: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -64,6 +66,7 @@ fun HomeScreen(
             )
     ) {
         HomeHeader(
+            onNavToBookmark = onNavToBookmark,
             onNavToSearch = onNavToSearch
         )
 
@@ -99,7 +102,10 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxSize(),
                         uiState = state,
                         onNavToArtist = onNavToArtist,
-                        onNavToMusic = onNavToMusic
+                        onNavToMusic = onNavToMusic,
+                        onBookmarkClick = { item ->
+                            viewModel.toggleBookmark(item)
+                        }
                     )
                 }
             }
@@ -108,13 +114,24 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeHeader(onNavToSearch: () -> Unit) {
+private fun HomeHeader(
+    onNavToBookmark: () -> Unit,
+    onNavToSearch: () -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
         TitleBar(
             modifier = Modifier.weight(1f),
             text = stringResource(R.string.app_title)
+        )
+
+        // Bookmark Entry Button
+        IconButton(
+            modifier = Modifier.padding(top = 16.dp),
+            imageVector = Icons.Filled.Bookmark,
+            iconSize = 32.dp,
+            onClick = onNavToBookmark
         )
 
         // Search Button
@@ -132,7 +149,8 @@ private fun SuccessHomeScreen(
     modifier: Modifier = Modifier,
     uiState: HomeListState.Success,
     onNavToArtist: (Long) -> Unit,
-    onNavToMusic: (List<MusicItem>, Int) -> Unit
+    onNavToMusic: (List<MusicItem>, Int) -> Unit,
+    onBookmarkClick: (MusicItem) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -168,6 +186,9 @@ private fun SuccessHomeScreen(
                     onClick = {
                         Log.d("HomeScreen", "Music: ${item.title} clicked")
                         onNavToMusic.invoke(uiState.recommendedMusic, index)
+                    },
+                    onBookmarkClick = {
+                        onBookmarkClick.invoke(item)
                     }
                 )
             }

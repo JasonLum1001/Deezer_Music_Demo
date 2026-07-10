@@ -97,7 +97,10 @@ fun ArtistScreen(
                 SuccessArtistScreen(
                     modifier = Modifier.fillMaxSize(),
                     uiState = state,
-                    onNavToMusic = onNavToMusic
+                    onNavToMusic = onNavToMusic,
+                    onBookmarkClick = { item ->
+                        viewModel.toggleBookmark(item)
+                    }
                 )
             }
         }
@@ -108,17 +111,11 @@ fun ArtistScreen(
 private fun SuccessArtistScreen(
     modifier: Modifier,
     uiState: ArtistListState.Success,
-    onNavToMusic: (List<MusicItem>, Int) -> Unit
+    onNavToMusic: (List<MusicItem>, Int) -> Unit,
+    onBookmarkClick: (MusicItem) -> Unit
 ) {
     LazyColumn(
-        modifier = modifier.background(
-            Brush.verticalGradient(
-                listOf(
-                    colorResource(R.color.transparent),
-                    colorResource(R.color.green_20)
-                )
-            )
-        ),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
@@ -145,6 +142,9 @@ private fun SuccessArtistScreen(
                 item = item,
                 onClick = {
                     onNavToMusic.invoke(uiState.artistTracks, index)
+                },
+                onBookmarkClick = {
+                    onBookmarkClick.invoke(item)
                 }
             )
         }
@@ -174,7 +174,7 @@ private fun ArtistHeader(
         IconButton(
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(8.dp),
+                .padding(top = 24.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
             iconSize = 60.dp,
             onClick = onBackBtnClicked

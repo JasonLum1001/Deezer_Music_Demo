@@ -144,7 +144,7 @@ private fun PlayerContent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(TimeUtils.millisecondToDuration(currentPosition))
-            Text(musicItem.duration)
+            Text(musicItem.durationStr)
         }
 
         Spacer(modifier = Modifier.height(16.dp))

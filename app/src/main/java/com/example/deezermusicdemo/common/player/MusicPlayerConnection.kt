@@ -103,7 +103,7 @@ class MusicPlayerConnection @Inject constructor(
                 album = metadata.albumTitle?.toString() ?: "",
                 albumArt = metadata.artworkUri?.toString() ?: "",
                 previewUrl = current.localConfiguration?.uri?.toString() ?: "",
-                duration = TimeUtils.millisecondToDuration(player.duration)
+                duration = TimeUtils.millisecondToSecond(player.duration)
             )
         } else null
 

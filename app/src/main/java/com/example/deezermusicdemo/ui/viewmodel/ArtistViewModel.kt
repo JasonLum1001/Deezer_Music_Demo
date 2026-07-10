@@ -78,4 +78,10 @@ class ArtistViewModel @Inject constructor(
             _loading.value = false
         }
     }
+
+    fun toggleBookmark(item: MusicItem) {
+        viewModelScope.launch {
+            repository.toggleBookmark(item)
+        }
+    }
 }

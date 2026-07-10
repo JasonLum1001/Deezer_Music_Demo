@@ -1,7 +1,9 @@
 package com.example.deezermusicdemo.data.repository
 
 import android.util.Log
+import com.example.deezermusicdemo.data.local.TrackDao
 import com.example.deezermusicdemo.data.mapper.toArtistItem
+import com.example.deezermusicdemo.data.mapper.toEntity
 import com.example.deezermusicdemo.data.remote.DeezerApiService
 import com.example.deezermusicdemo.domain.model.MusicItem
 import com.example.deezermusicdemo.domain.repository.MusicRepository
@@ -10,12 +12,16 @@ import com.example.deezermusicdemo.domain.model.ArtistInfo
 import com.example.deezermusicdemo.domain.model.ArtistItem
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class MusicRepositoryImpl @Inject constructor(
-    private val apiService: DeezerApiService
+    private val apiService: DeezerApiService,
+    private val trackDao: TrackDao,
 ) : MusicRepository {
 
     private val _recommendedMusic = MutableStateFlow<List<MusicItem>>(emptyList())
@@ -29,6 +35,10 @@ class MusicRepositoryImpl @Inject constructor(
 
     private val _artistInfo = MutableStateFlow<ArtistInfo?>(null)
     override val artistInfo = _artistInfo.asStateFlow()
+
+    override val bookmarkList = trackDao.getBookmarkedTracks().map { entities ->
+        entities.map { it.toMusicItem() }
+    }
 
     override suspend fun refreshRecommendations() {
         Log.d("MusicRepository", "refreshRecommendations")
@@ -87,5 +97,45 @@ class MusicRepositoryImpl @Inject constructor(
         Log.d("MusicRepository", "clearArtistInfo")
 
         _artistInfo.value = null
+    }
+
+    override suspend fun toggleBookmark(item: MusicItem) {
+        Log.d("MusicRepository", "toggleBookmark=> ${item.id}")
+
+        val existing = trackDao.getTrackById(item.id)
+        val isBookmarked = if (existing == null) {
+            trackDao.insertTrack(item.copy(isBookmarked = true).toEntity())
+            true
+        } else {
+            val newState = !existing.isBookmarked
+            trackDao.updateBookmark(item.id, newState)
+            newState
+        }
+        updateBookmarkState(item.id, isBookmarked)
+    }
+
+    private fun updateBookmarkState(
+        musicId: Long,
+        isBookmarked: Boolean
+    ) {
+        _recommendedMusic.update { list ->
+            list.map { music ->
+                if (music.id == musicId) {
+                    music.copy(isBookmarked = isBookmarked)
+                } else {
+                    music
+                }
+            }
+        }
+
+        _searchResult.update { list ->
+            list.map { music ->
+                if (music.id == musicId) {
+                    music.copy(isBookmarked = isBookmarked)
+                } else {
+                    music
+                }
+            }
+        }
     }
 }

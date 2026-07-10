@@ -2,6 +2,7 @@ package com.example.deezermusicdemo.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.deezermusicdemo.domain.model.MusicItem
 import com.example.deezermusicdemo.domain.repository.MusicRepository
 import com.example.deezermusicdemo.ui.state.HomeListState
 import com.example.deezermusicdemo.utils.NetworkMonitor
@@ -67,6 +68,12 @@ class MusicViewModel @Inject constructor(
             }
 
             _loading.value = false
+        }
+    }
+
+    fun toggleBookmark(item: MusicItem) {
+        viewModelScope.launch {
+            repository.toggleBookmark(item)
         }
     }
 }

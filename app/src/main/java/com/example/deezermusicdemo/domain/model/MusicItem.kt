@@ -1,5 +1,7 @@
 package com.example.deezermusicdemo.domain.model
 
+import com.example.deezermusicdemo.utils.TimeUtils
+
 data class MusicItem(
     val id: Long,
     val title: String,
@@ -7,5 +9,8 @@ data class MusicItem(
     val album: String,
     val albumArt: String,
     val previewUrl: String,
-    val duration: String
-)
+    val duration: Long,
+    val isBookmarked: Boolean = false
+) {
+    val durationStr = TimeUtils.secondToDuration(duration)
+}

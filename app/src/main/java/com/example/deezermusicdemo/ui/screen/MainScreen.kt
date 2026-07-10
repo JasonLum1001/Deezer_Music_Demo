@@ -88,6 +88,9 @@ fun MainScreen(
                     onNavToMusic = { musicItems, index ->
                         playMusic(musicItems, index)
                     },
+                    onNavToBookmark = {
+                        navController.navigate(Screen.Bookmark.route)
+                    },
                     onNavToSearch = {
                         navController.navigate(Screen.Search.route)
                     }
@@ -118,6 +121,20 @@ fun MainScreen(
                 )
             ) { _ ->
                 ArtistScreen(
+                    onBackBtnClicked = {
+                        navController.popBackStack()
+                    },
+                    onNavToMusic = { musicItems, index ->
+                        playMusic(musicItems, index)
+                    }
+                )
+            }
+
+            // Bookmark Page
+            composable(
+                route = Screen.Bookmark.route
+            ) {
+                BookmarkScreen(
                     onBackBtnClicked = {
                         navController.popBackStack()
                     },

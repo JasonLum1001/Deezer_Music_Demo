@@ -22,7 +22,7 @@ import com.example.deezermusicdemo.R
 fun ErrorStateView(
     modifier: Modifier = Modifier,
     message: String,
-    onRetry: () -> Unit
+    onRetry: (() -> Unit)?
 ) {
     Column(
         modifier = modifier,
@@ -42,8 +42,10 @@ fun ErrorStateView(
             textAlign = TextAlign.Center
         )
 
-        Button(onClick = onRetry) {
-            Text(stringResource(R.string.retry))
+        if (onRetry != null) {
+            Button(onClick = onRetry) {
+                Text(stringResource(R.string.retry))
+            }
         }
     }
 }

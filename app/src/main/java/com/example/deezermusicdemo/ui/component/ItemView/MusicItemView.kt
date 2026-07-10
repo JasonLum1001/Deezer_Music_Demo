@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,13 +24,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.deezermusicdemo.common.component.IconButton
 import com.example.deezermusicdemo.domain.model.MusicItem
 
 @Composable
 fun MusicItemView (
     modifier: Modifier = Modifier,
     item: MusicItem,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onBookmarkClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -63,5 +69,11 @@ fun MusicItemView (
                 overflow = TextOverflow.Ellipsis
             )
         }
+
+        IconButton(
+            iconTint = if (item.isBookmarked) MaterialTheme.colorScheme.primary else LocalContentColor.current,
+            imageVector = if (item.isBookmarked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            onClick = onBookmarkClick
+        )
     }
 }
