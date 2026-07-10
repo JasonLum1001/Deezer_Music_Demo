@@ -47,6 +47,7 @@ import kotlinx.coroutines.flow.StateFlow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerBottomSheet(
+    modifier: Modifier = Modifier,
     playerStateFlow: StateFlow<MusicPlayerState>,
     onSeek: (Float) -> Unit,
     onPlayPause: () -> Unit,
@@ -62,6 +63,7 @@ fun PlayerBottomSheet(
     )
 
     ModalBottomSheet(
+        modifier = Modifier.fillMaxWidth(),
         onDismissRequest = onDismiss,
         sheetState = sheetState
     ) {

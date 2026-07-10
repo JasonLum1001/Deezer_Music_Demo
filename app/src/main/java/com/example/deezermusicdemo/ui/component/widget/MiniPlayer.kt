@@ -99,7 +99,8 @@ fun MiniPlayer(
             IconButton(onClick = onSkipNext) {
                 Icon(
                     imageVector = Icons.Default.SkipNext,
-                    contentDescription = "Next")
+                    contentDescription = "Next"
+                )
             }
         }
     }
