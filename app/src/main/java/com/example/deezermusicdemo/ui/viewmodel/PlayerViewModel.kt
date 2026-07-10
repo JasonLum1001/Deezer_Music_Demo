@@ -10,8 +10,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val repository: MusicRepository,
-    networkMonitor: NetworkMonitor,
     private val player: MusicPlayerConnection
 ) : ViewModel() {
     val state = player.playerState
