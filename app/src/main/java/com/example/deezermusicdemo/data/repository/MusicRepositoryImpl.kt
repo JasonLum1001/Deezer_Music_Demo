@@ -46,7 +46,10 @@ class MusicRepositoryImpl @Inject constructor(
             val music = async {
                 apiService.getRecommendedTracks()
                     .data
-                    .map { it.toMusicItem() }
+                    .map { item ->
+                        val isBookmarked = checkBookmark(item.id)
+                        item.toMusicItem(isBookmarked)
+                    }
             }
 
             val artists = async {
@@ -63,7 +66,11 @@ class MusicRepositoryImpl @Inject constructor(
     override suspend fun searchTracks(query: String) {
         Log.d("MusicRepository", "searchTracks: $query")
 
-        val result = apiService.searchTracks(query).data.map { it.toMusicItem() }
+        val result = apiService.searchTracks(query).data
+            .map { item ->
+                val isBookmarked = checkBookmark(item.id)
+                item.toMusicItem(isBookmarked)
+            }
         _searchResult.value = result
     }
 
@@ -82,7 +89,11 @@ class MusicRepositoryImpl @Inject constructor(
             }
 
             val tracks = async {
-                apiService.getTracksFromArtistId(artistId).data.map { it.toMusicItem() }
+                apiService.getTracksFromArtistId(artistId).data
+                    .map { item ->
+                        val isBookmarked = checkBookmark(item.id)
+                        item.toMusicItem(isBookmarked)
+                    }
             }
 
             _artistInfo.value = ArtistInfo(
@@ -99,6 +110,12 @@ class MusicRepositoryImpl @Inject constructor(
         _artistInfo.value = null
     }
 
+    private suspend fun checkBookmark(itemId: Long): Boolean {
+        Log.d("MusicRepository", "checkBookmark=> $itemId")
+        val existing = trackDao.getTrackById(itemId)
+        return existing != null && existing.isBookmarked
+    }
+
     override suspend fun toggleBookmark(item: MusicItem) {
         Log.d("MusicRepository", "toggleBookmark=> ${item.id}")
 
@@ -108,7 +125,7 @@ class MusicRepositoryImpl @Inject constructor(
             true
         } else {
             val newState = !existing.isBookmarked
-            trackDao.updateBookmark(item.id, newState)
+            trackDao.deleteTrackById(item.id)
             newState
         }
         updateBookmarkState(item.id, isBookmarked)
@@ -136,6 +153,18 @@ class MusicRepositoryImpl @Inject constructor(
                     music
                 }
             }
+        }
+
+        _artistInfo.update { info ->
+            info?.copy(
+                tracks = info.tracks.map { music ->
+                    if (music.id == musicId) {
+                        music.copy(isBookmarked = isBookmarked)
+                    } else {
+                        music
+                    }
+                }
+            )
         }
     }
 }

@@ -5,9 +5,8 @@ import com.example.deezermusicdemo.data.model.DeezerTrack
 import com.example.deezermusicdemo.data.model.TrackEntity
 import com.example.deezermusicdemo.domain.model.ArtistItem
 import com.example.deezermusicdemo.domain.model.MusicItem
-import com.example.deezermusicdemo.utils.TimeUtils
 
-fun DeezerTrack.toMusicItem(): MusicItem {
+fun DeezerTrack.toMusicItem(isBookmarked: Boolean): MusicItem {
     return MusicItem(
         id = id,
         title = title,
@@ -15,7 +14,8 @@ fun DeezerTrack.toMusicItem(): MusicItem {
         album = album.title,
         albumArt = album.cover,
         previewUrl = preview,
-        duration = duration
+        duration = duration,
+        isBookmarked = isBookmarked
     )
 }
 

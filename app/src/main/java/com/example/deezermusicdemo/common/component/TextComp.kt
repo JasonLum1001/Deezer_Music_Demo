@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -17,7 +18,8 @@ import com.example.deezermusicdemo.R
 @Composable
 fun TitleBar(
     modifier: Modifier = Modifier,
-    text: String
+    text: String,
+    color: Color = colorResource(R.color.white_100)
 ) {
     Text(
         modifier = modifier
@@ -27,7 +29,7 @@ fun TitleBar(
         text = text,
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
-        color = colorResource(R.color.white_100),
+        color = color,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
@@ -36,7 +38,8 @@ fun TitleBar(
 @Composable
 fun Heading(
     modifier: Modifier = Modifier,
-    text: String
+    text: String,
+    color: Color = colorResource(R.color.white_100)
 ) {
     Text(
         modifier = modifier
@@ -46,7 +49,7 @@ fun Heading(
         text = text,
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
-        color = colorResource(R.color.white_100),
+        color = color,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
