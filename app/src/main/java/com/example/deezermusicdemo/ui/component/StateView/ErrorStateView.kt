@@ -50,7 +50,7 @@ fun ErrorStateView(
 
         if (onRetry != null) {
             Button(
-                colors = ButtonColors(
+                colors = ButtonDefaults.buttonColors().copy(
                     containerColor = colorResource(R.color.green_70),
                     contentColor = colorResource(R.color.white_100),
                     disabledContainerColor = colorResource(R.color.green_30),

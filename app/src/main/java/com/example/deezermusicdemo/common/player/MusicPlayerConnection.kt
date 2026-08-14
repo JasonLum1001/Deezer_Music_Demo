@@ -2,6 +2,7 @@ package com.example.deezermusicdemo.common.player
 
 import android.content.ComponentName
 import android.content.Context
+import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
@@ -27,11 +28,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.net.toUri
+import androidx.media3.common.util.Log
+import androidx.media3.common.util.UnstableApi
 
 @Singleton
+@OptIn(UnstableApi::class)
 class MusicPlayerConnection @Inject constructor(
     private val context: Context
 ) {
+    companion object {
+        private const val TAG = "MusicPlayerConnection"
+    }
     private var controllerFuture: ListenableFuture<MediaController>? = null
     private var controller: MediaController? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -47,6 +54,7 @@ class MusicPlayerConnection @Inject constructor(
     }
 
     private fun connect() {
+        Log.d(TAG, "connect")
         val token = SessionToken(
             context,
             ComponentName(context, MusicService::class.java)
@@ -66,6 +74,7 @@ class MusicPlayerConnection @Inject constructor(
 
 
     private fun setupListener() {
+        Log.d(TAG, "setupListener")
         controller?.addListener(
             object : Player.Listener {
                 override fun onEvents(player: Player, events: Player.Events) {
@@ -81,6 +90,7 @@ class MusicPlayerConnection @Inject constructor(
 
 
                 override fun onPlayerError(error: PlaybackException) {
+                    Log.d(TAG, "onPlayerError: $error")
                     _playerState.update {
                         it.copy(error = error.message)
                     }
@@ -91,6 +101,7 @@ class MusicPlayerConnection @Inject constructor(
 
 
     private fun updateState() {
+        Log.d(TAG, "updateState")
         val player = controller ?: return
         val current = player.currentMediaItem
         val metadata = current?.mediaMetadata
@@ -122,6 +133,7 @@ class MusicPlayerConnection @Inject constructor(
 
 
     fun setPlaylist(musicItems: List<MusicItem>, startIndex: Int = 0) {
+        Log.d(TAG, "setPlaylist => musicItems: ${musicItems.size}, startIndex: $startIndex")
         val mediaItems = musicItems.map { createMediaItem(it) }
 
         controller?.let { player ->
@@ -144,6 +156,7 @@ class MusicPlayerConnection @Inject constructor(
     }
 
     fun togglePlayPause() {
+        Log.d(TAG, "togglePlayPause")
         controller?.let {
             if (it.isPlaying) it.pause() else it.play()
         }
@@ -151,18 +164,22 @@ class MusicPlayerConnection @Inject constructor(
 
 
     fun seekTo(position: Long) {
+        Log.d(TAG, "seekTo => position: $position")
         controller?.seekTo(position)
     }
 
     fun next() {
+        Log.d(TAG, "seekToNext")
         controller?.seekToNext()
     }
 
     fun previous() {
+        Log.d(TAG, "seekToPrevious")
         controller?.seekToPrevious()
     }
 
     fun toggleRepeat() {
+        Log.d(TAG, "toggleRepeat")
         controller?.let {
             it.repeatMode =
                 when (it.repeatMode) {
@@ -174,6 +191,7 @@ class MusicPlayerConnection @Inject constructor(
     }
 
     fun toggleShuffle() {
+        Log.d(TAG, "toggleShuffle")
         controller?.let {
             it.shuffleModeEnabled = !it.shuffleModeEnabled
         }
@@ -209,6 +227,16 @@ class MusicPlayerConnection @Inject constructor(
     private fun createMediaItem(
         song: MusicItem
     ): MediaItem {
+        Log.d(TAG, "createMediaItem =>" +
+                "id: ${song.id},\n" +
+                "title: ${song.title}\n" +
+                "artist: ${song.artist}\n" +
+                "album: ${song.album}\n" +
+                "albumArt: ${song.albumArt}\n" +
+                "previewUrl: ${song.previewUrl}\n" +
+                "duration: ${song.duration}\n" +
+                "isBookmarked: ${song.isBookmarked}"
+        )
         return MediaItem.Builder()
             .setMediaId(song.id.toString())
             .setUri(song.previewUrl)
@@ -226,6 +254,7 @@ class MusicPlayerConnection @Inject constructor(
 
 
     private fun startPositionUpdate() {
+        Log.d(TAG, "startPositionUpdate")
         positionJob?.cancel()
         positionJob = scope.launch {
             while (isActive) {
@@ -244,11 +273,13 @@ class MusicPlayerConnection @Inject constructor(
 
 
     private fun stopPositionUpdate() {
+        Log.d(TAG, "stopPositionUpdate")
         positionJob?.cancel()
     }
 
 
     fun release() {
+        Log.d(TAG, "release")
         positionJob?.cancel()
         scope.cancel()
         controller?.release()

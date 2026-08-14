@@ -212,7 +212,7 @@ fun SuccessSearchScreen(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 item = item,
                 onClick = {
-                    onNavToMusic.invoke(listOf(item), index)
+                    onNavToMusic.invoke(uiState.searchResult, index)
                 },
                 onBookmarkClick = {
                     onBookmarkClick.invoke(item)

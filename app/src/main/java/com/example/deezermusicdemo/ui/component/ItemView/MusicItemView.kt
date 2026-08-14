@@ -75,7 +75,7 @@ fun MusicItemView (
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.width(8.dp))
+
             Text(
                 text = item.artist,
                 style = MaterialTheme.typography.bodyMedium,

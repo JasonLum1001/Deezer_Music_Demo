@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -44,7 +45,7 @@ fun NoNetworkStateView(
         )
 
         Button(
-            colors = ButtonColors(
+            colors = ButtonDefaults.buttonColors().copy(
                 containerColor = colorResource(R.color.green_70),
                 contentColor = colorResource(R.color.white_100),
                 disabledContainerColor = colorResource(R.color.green_30),

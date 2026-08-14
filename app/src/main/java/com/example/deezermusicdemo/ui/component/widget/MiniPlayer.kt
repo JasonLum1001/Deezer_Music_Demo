@@ -25,10 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.deezermusicdemo.R
 import com.example.deezermusicdemo.domain.model.MusicItem
 
 @Composable
@@ -70,13 +72,17 @@ fun MiniPlayer(
                 Text(
                     text = item.title,
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Black,
+                    color = colorResource(R.color.white_100),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+
                 Text(
                     text = item.artist,
                     style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Thin,
+                    color = colorResource(R.color.white_80),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

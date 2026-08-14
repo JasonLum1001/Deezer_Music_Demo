@@ -27,6 +27,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -36,10 +37,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.deezermusicdemo.R
 import com.example.deezermusicdemo.common.player.MusicPlayerState
 import com.example.deezermusicdemo.utils.TimeUtils
 import kotlinx.coroutines.flow.StateFlow
@@ -115,28 +119,40 @@ private fun PlayerContent(
             contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
 
         Text(
             text = musicItem.title,
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            fontWeight = FontWeight.Black,
+            color = colorResource(R.color.white_100),
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
+
         Text(
             text = musicItem.artist,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.secondary,
-            textAlign = TextAlign.Center
+            fontWeight = FontWeight.Thin,
+            color = colorResource(R.color.white_80),
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(52.dp))
 
         Slider(
+            modifier = Modifier.fillMaxWidth(),
+            colors = SliderDefaults.colors().copy(
+                thumbColor = colorResource(R.color.green_80),
+                activeTrackColor = colorResource(R.color.green_60)
+            ),
             value = currentPosition.toFloat(),
             onValueChange = onSeek,
             valueRange = 0f..duration.toFloat(),
-            modifier = Modifier.fillMaxWidth()
         )
 
         Row(
@@ -162,7 +178,7 @@ private fun PlayerContent(
                         else -> Icons.Default.Repeat
                     },
                     contentDescription = "Repeat Mode",
-                    tint = if (repeatMode != 0) MaterialTheme.colorScheme.primary else LocalContentColor.current
+                    tint = if (repeatMode != 0) colorResource(R.color.green_80) else colorResource(R.color.white_100)
                 )
             }
 
@@ -176,7 +192,7 @@ private fun PlayerContent(
 
             FloatingActionButton(
                 onClick = onPlayPause,
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                containerColor = colorResource(R.color.green_80)
             ) {
                 Icon(
                     modifier = Modifier.size(36.dp),
@@ -196,7 +212,7 @@ private fun PlayerContent(
                 Icon(
                     imageVector = Icons.Default.Shuffle,
                     contentDescription = "Shuffle Mode",
-                    tint = if (shuffleEnabled) MaterialTheme.colorScheme.primary else LocalContentColor.current
+                    tint = if (shuffleEnabled) colorResource(R.color.green_80) else colorResource(R.color.white_100)
                 )
             }
         }
