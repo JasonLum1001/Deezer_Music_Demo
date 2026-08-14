@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +27,7 @@ fun NoNetworkStateView(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Icon(
             imageVector = Icons.Default.WifiOff,
@@ -36,11 +38,20 @@ fun NoNetworkStateView(
 
         Text(
             text = stringResource(R.string.network_error_msg),
+            style = MaterialTheme.typography.labelLarge,
             color = colorResource(R.color.white_100),
             textAlign = TextAlign.Center
         )
 
-        Button(onClick = onRetry) {
+        Button(
+            colors = ButtonColors(
+                containerColor = colorResource(R.color.green_70),
+                contentColor = colorResource(R.color.white_100),
+                disabledContainerColor = colorResource(R.color.green_30),
+                disabledContentColor = colorResource(R.color.white_30)
+            ),
+            onClick = onRetry
+        ) {
             Text(stringResource(R.string.retry))
         }
     }

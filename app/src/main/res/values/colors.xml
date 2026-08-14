@@ -20,15 +20,27 @@
     <color name="red_100">#FFFF0000</color>
 
     <!-- Green -->
-    <color name="green_10">#1A00FF00</color>
-    <color name="green_20">#3300FF00</color>
-    <color name="green_30">#4D00FF00</color>
-    <color name="green_40">#6600FF00</color>
-    <color name="green_50">#8000FF00</color>
-    <color name="green_60">#9900FF00</color>
-    <color name="green_70">#B300FF00</color>
-    <color name="green_80">#CC00FF00</color>
-    <color name="green_90">#E600FF00</color>
+    <color name="green_alpha_10">#1A00FF00</color>
+    <color name="green_alpha_20">#3300FF00</color>
+    <color name="green_alpha_0">#4D00FF00</color>
+    <color name="green_alpha_40">#6600FF00</color>
+    <color name="green_alpha_50">#8000FF00</color>
+    <color name="green_alpha_60">#9900FF00</color>
+    <color name="green_alpha_70">#B300FF00</color>
+    <color name="green_alpha_80">#CC00FF00</color>
+    <color name="green_alpha_90">#E600FF00</color>
+    <color name="green_alpha_100">#FF00FF00</color>
+
+    <!-- Green -->
+    <color name="green_10">#001A00</color>
+    <color name="green_20">#003300</color>
+    <color name="green_30">#004D00</color>
+    <color name="green_40">#006600</color>
+    <color name="green_50">#008000</color>
+    <color name="green_60">#009900</color>
+    <color name="green_70">#FF00B300</color>
+    <color name="green_80">#FF00CC00</color>
+    <color name="green_90">#FF00E600</color>
     <color name="green_100">#FF00FF00</color>
 
     <!-- Blue -->

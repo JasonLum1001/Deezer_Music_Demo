@@ -28,7 +28,7 @@ fun TitleBar(
             .padding(top = 24.dp, bottom = 8.dp),
         text = text,
         fontSize = 24.sp,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Black,
         color = color,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
@@ -47,7 +47,7 @@ fun Heading(
             .wrapContentHeight()
             .padding(top = 16.dp, bottom = 8.dp),
         text = text,
-        fontSize = 18.sp,
+        fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
         color = color,
         maxLines = 1,

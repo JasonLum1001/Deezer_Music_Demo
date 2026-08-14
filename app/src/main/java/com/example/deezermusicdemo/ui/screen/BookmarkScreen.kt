@@ -1,6 +1,7 @@
 package com.example.deezermusicdemo.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,10 +31,7 @@ import com.example.deezermusicdemo.domain.model.MusicItem
 import com.example.deezermusicdemo.ui.component.ItemView.MusicItemView
 import com.example.deezermusicdemo.ui.component.StateView.ErrorStateView
 import com.example.deezermusicdemo.ui.component.StateView.LoadingStateView
-import com.example.deezermusicdemo.ui.component.StateView.NoNetworkStateView
-import com.example.deezermusicdemo.ui.state.ArtistListState
 import com.example.deezermusicdemo.ui.state.BookmarkListState
-import com.example.deezermusicdemo.ui.viewmodel.ArtistViewModel
 import com.example.deezermusicdemo.ui.viewmodel.BookmarkViewModel
 
 @Composable
@@ -47,15 +45,6 @@ fun BookmarkScreen(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        colorResource(R.color.transparent),
-                        colorResource(R.color.green_20)
-                    )
-                )
-            )
     ) {
         BookmarkHeader(
             modifier = Modifier.zIndex(1f),
@@ -66,6 +55,7 @@ fun BookmarkScreen(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
+                .padding(top = 16.dp)
         ) {
             when (val state = uiState) {
                 is BookmarkListState.Loading -> {
@@ -85,7 +75,7 @@ fun BookmarkScreen(
                 is BookmarkListState.Empty -> {
                     ErrorStateView(
                         modifier = Modifier.align(Alignment.Center),
-                        message = stringResource(R.string.empty_bookmark_msg),
+                        message = stringResource(R.string.empty_fav_msg),
                         onRetry = null
                     )
                 }
@@ -107,7 +97,7 @@ fun BookmarkScreen(
 
 @Composable
 private fun SuccessBookmarkScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     uiState: BookmarkListState.Success,
     onNavToMusic: (List<MusicItem>, Int) -> Unit,
     onBookmarkClick: (MusicItem) -> Unit
@@ -115,6 +105,7 @@ private fun SuccessBookmarkScreen(
     LazyColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         itemsIndexed(
             uiState.bookmarkList
@@ -142,29 +133,20 @@ private fun BookmarkHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(60.dp)
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        colorResource(R.color.black_40),
-                        colorResource(R.color.transparent)
-                    )
-                )
-            ),
+            .height(64.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Back button
         IconButton(
-            modifier = Modifier
-                .padding(top = 24.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
+            modifier = Modifier.padding(top = 24.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-            iconSize = 60.dp,
+            iconSize = 32.dp,
             onClick = onBackBtnClicked
         )
 
         TitleBar(
             modifier = Modifier.weight(1f),
-            text = stringResource(R.string.bookmark_list_title),
+            text = stringResource(R.string.fav_list_title),
         )
     }
 }

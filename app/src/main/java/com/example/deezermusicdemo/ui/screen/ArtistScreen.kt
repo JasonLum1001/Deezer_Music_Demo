@@ -1,6 +1,7 @@
 package com.example.deezermusicdemo.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,20 +56,10 @@ fun ArtistScreen(
 
     Box(
         modifier = modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        colorResource(R.color.transparent),
-                        colorResource(R.color.green_20)
-                    )
-                )
-            )
     ) {
         ArtistHeader(
             modifier = Modifier.zIndex(1f),
             onBackBtnClicked = onBackBtnClicked,
-
         )
 
         when (val state = uiState) {
@@ -109,7 +100,7 @@ fun ArtistScreen(
 
 @Composable
 private fun SuccessArtistScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     uiState: ArtistListState.Success,
     onNavToMusic: (List<MusicItem>, Int) -> Unit,
     onBookmarkClick: (MusicItem) -> Unit
@@ -117,6 +108,7 @@ private fun SuccessArtistScreen(
     LazyColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         item {
             ArtistInfoBox(
@@ -160,23 +152,21 @@ private fun ArtistHeader(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(60.dp)
+            .height(64.dp)
             .background(
                 Brush.verticalGradient(
                     listOf(
-                        colorResource(R.color.black_40),
+                        colorResource(R.color.black_60),
                         colorResource(R.color.transparent)
                     )
                 )
-            )
+            ),
     ) {
         // Back button
         IconButton(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(top = 24.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
+            modifier = Modifier.padding(start = 8.dp, top = 24.dp, end = 8.dp , bottom = 8.dp),
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-            iconSize = 60.dp,
+            iconSize = 32.dp,
             onClick = onBackBtnClicked
         )
     }
@@ -209,7 +199,7 @@ fun ArtistInfoBox(
                     Brush.verticalGradient(
                         listOf(
                             colorResource(R.color.transparent),
-                            colorResource(R.color.black_40)
+                            colorResource(R.color.black_60)
                         )
                     )
                 )
@@ -234,10 +224,10 @@ fun ArtistInfoBox(
                 .padding(end = 16.dp),
             onClick = onPlayClicked,
             shape = CircleShape,
-            containerColor = colorResource(R.color.green_100)
+            containerColor = colorResource(R.color.green_70)
         ) {
             Icon(
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier.size(32.dp),
                 imageVector = Icons.Default.PlayArrow,
                 contentDescription = null
             )

@@ -63,15 +63,6 @@ fun SearchScreen(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        colorResource(R.color.transparent),
-                        colorResource(R.color.green_20)
-                    )
-                )
-            )
     ) {
         SearchHeader(
             onBackBtnClicked = onBackBtnClicked,
@@ -125,6 +116,7 @@ fun SearchScreen(
 
 @Composable
 fun SearchHeader(
+    modifier: Modifier = Modifier,
     onBackBtnClicked: () -> Unit,
     onSearch: (String) -> Unit
 ) {
@@ -141,8 +133,9 @@ fun SearchHeader(
     }
 
     Row(
-        modifier = Modifier
-            .height(60.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .height(64.dp)
             .padding(top = 24.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -150,7 +143,7 @@ fun SearchHeader(
         // Back Button
         IconButton(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-            iconSize = 60.dp,
+            iconSize = 32.dp,
             onClick = onBackBtnClicked
         )
 
@@ -158,7 +151,7 @@ fun SearchHeader(
         MusicSearchBar(
             modifier = Modifier
                 .weight(1f)
-                .height(40.dp)
+                .height(64.dp)
                 .padding(horizontal = 8.dp)
                 .clip(RoundedCornerShape(30.dp)),
             value = searchQuery,
@@ -209,12 +202,14 @@ fun SuccessSearchScreen(
     LazyColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
 
         itemsIndexed(
             items = uiState.searchResult
         ) { index, item ->
             MusicItemView(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 item = item,
                 onClick = {
                     onNavToMusic.invoke(listOf(item), index)

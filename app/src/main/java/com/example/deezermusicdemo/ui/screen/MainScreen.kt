@@ -47,6 +47,18 @@ fun MainScreen(
         showPlayerSheet = true
     }
 
+    val appModifier = Modifier
+        .fillMaxSize()
+        .background(
+            Brush.verticalGradient(
+                colorStops = arrayOf(
+                    0.0f to colorResource(R.color.green_10),
+                    0.6f to colorResource(R.color.green_20),
+                    1.0f to colorResource(R.color.green_50)
+                )
+            )
+        )
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -82,6 +94,7 @@ fun MainScreen(
                 route = Screen.Home.route
             ) {
                 HomeScreen(
+                    modifier = appModifier,
                     onNavToArtist = { artistId ->
                         navController.navigate(Screen.Artist.createRoute(artistId))
                     },
@@ -102,6 +115,7 @@ fun MainScreen(
                 route = Screen.Search.route
             ) {
                 SearchScreen(
+                    modifier = appModifier,
                     onBackBtnClicked = {
                         navController.popBackStack()
                     },
@@ -121,6 +135,7 @@ fun MainScreen(
                 )
             ) { _ ->
                 ArtistScreen(
+                    modifier = appModifier,
                     onBackBtnClicked = {
                         navController.popBackStack()
                     },
@@ -135,6 +150,7 @@ fun MainScreen(
                 route = Screen.Bookmark.route
             ) {
                 BookmarkScreen(
+                    modifier = appModifier,
                     onBackBtnClicked = {
                         navController.popBackStack()
                     },

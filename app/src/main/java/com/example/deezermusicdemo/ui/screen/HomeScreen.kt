@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -54,18 +55,12 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        colorResource(R.color.transparent),
-                        colorResource(R.color.green_20)
-                    )
-                )
-            )
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         HomeHeader(
+            modifier = Modifier.padding(horizontal = 16.dp),
             onNavToBookmark = onNavToBookmark,
             onNavToSearch = onNavToSearch
         )
@@ -115,10 +110,12 @@ fun HomeScreen(
 
 @Composable
 private fun HomeHeader(
+    modifier: Modifier = Modifier,
     onNavToBookmark: () -> Unit,
     onNavToSearch: () -> Unit
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         TitleBar(
@@ -155,9 +152,11 @@ private fun SuccessHomeScreen(
     LazyColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         item {
             Heading(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 text = stringResource(R.string.artist_list_title)
             )
         }
@@ -174,6 +173,7 @@ private fun SuccessHomeScreen(
 
         item {
             Heading(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 text = stringResource(R.string.music_list_title)
             )
         }
@@ -182,6 +182,7 @@ private fun SuccessHomeScreen(
             items = uiState.recommendedMusic,
             itemContent = { index, item ->
                 MusicItemView(
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     item = item,
                     onClick = {
                         Log.d("HomeScreen", "Music: ${item.title} clicked")
@@ -210,6 +211,10 @@ fun ArtistListView(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        item {
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+
         items(
             items = artistList,
             itemContent = { item ->
@@ -219,6 +224,10 @@ fun ArtistListView(
                 )
             }
         )
+        
+        item {
+            Spacer(modifier = Modifier.width(8.dp))
+        }
     }
 }
 
